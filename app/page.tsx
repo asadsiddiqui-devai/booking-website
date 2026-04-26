@@ -875,13 +875,13 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid gap-4 md:grid-cols-2" style={{ perspective: "1200px" }}>
+          <div className="grid gap-4 md:grid-cols-3" style={{ perspective: "1200px" }}>
             {[
               {
                 href: "/travel-request",
                 icon: Plane,
                 title: "Travel request",
-                body: "Add one or more flights. Review the itinerary, then email it to the travel agent.",
+                body: "Submit flights for approval. The travel agent receives an email with Accept/Reject buttons.",
                 cta: "Start travel request",
                 orb: "from-indigo-500/25 to-violet-500/15",
                 iconBg: "group-hover:bg-indigo-500",

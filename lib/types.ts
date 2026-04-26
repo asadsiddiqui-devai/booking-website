@@ -93,3 +93,35 @@ export interface CarBooking {
   status: "pending" | "confirmed" | "cancelled";
   created_at: string;
 }
+
+// Travel request system
+export interface TravelRequestLeg {
+  from: string;
+  to: string;
+  date: string; // YYYY-MM-DD
+}
+
+export type TravelRequestStatus = "pending" | "accepted" | "rejected";
+
+export interface TravelRequest {
+  id: string;
+  request_number: number;
+  guest_name: string;
+  passenger_names: string[];
+  legs: TravelRequestLeg[];
+  travel_agent_email: string;
+  status: TravelRequestStatus;
+  action_token: string;
+  token_used: boolean;
+  notes?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateTravelRequestPayload {
+  guest_name: string;
+  passenger_names: string[];
+  legs: TravelRequestLeg[];
+  travel_agent_email: string;
+  notes?: string;
+}

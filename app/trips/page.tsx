@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ConfirmationConfetti } from "@/components/trip/confirmation-confetti";
+import { SaveTrip } from "@/components/trip/save-trip";
+import { TravelRequestForm } from "@/components/trip/travel-request-form";
 import { formatDate, formatDateTime, formatDuration, formatMoney } from "@/lib/utils/format";
 
 interface PageProps {
@@ -79,6 +81,38 @@ export default async function TripSummaryPage({ searchParams }: PageProps) {
     <PageTransition>
       <div className="mx-auto max-w-4xl px-4 py-8">
         <ConfirmationConfetti />
+        <SaveTrip
+          flightOrigin={flightOrigin}
+          flightDestination={flightDestination}
+          flightDeparture={flightDeparture}
+          flightArrival={flightArrival}
+          flightAirline={flightAirline}
+          flightNumber={flightNumber}
+          flightLogoUrl={flightLogoUrl}
+          flightPrice={flightPrice}
+          flightCurrency={flightCurrency}
+          flightDuration={flightDuration}
+          flightStops={flightStops}
+          cabinClass={cabinClass}
+          hotelName={hotelName}
+          hotelAddress={hotelAddress}
+          hotelCheckIn={hotelCheckIn}
+          hotelCheckOut={hotelCheckOut}
+          hotelRating={hotelRating}
+          hotelTotalPrice={hotelTotalPrice}
+          hotelCurrency={hotelCurrency}
+          carProvider={carProvider}
+          carCategory={carCategory}
+          carExample={carExample}
+          pickupLocation={pickupLocation}
+          pickupAt={pickupAt}
+          dropoffAt={dropoffAt}
+          carTotalPrice={carTotalPrice}
+          carDailyRate={carDailyRate}
+          carTotalDays={carTotalDays}
+          totalPrice={totalPrice}
+          currency={currency}
+        />
 
         <div className="mb-2">
           <Badge variant="success" className="gap-1.5">
@@ -177,6 +211,13 @@ export default async function TripSummaryPage({ searchParams }: PageProps) {
               </Link>
             </CardContent>
           </Card>
+
+          {/* Travel request — auto-filled from confirmed booking */}
+          <TravelRequestForm
+            flightOrigin={flightOrigin}
+            flightDestination={flightDestination}
+            flightDeparture={flightDeparture}
+          />
         </div>
       </div>
     </PageTransition>

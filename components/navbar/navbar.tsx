@@ -2,20 +2,23 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Plane, Menu, X } from "lucide-react";
+import { Plane, Menu, X, Luggage } from "lucide-react";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getTrips } from "@/lib/trips-storage";
 
 const NAV_LINKS = [
   { href: "/search/flights", label: "Flights" },
   { href: "/search/hotels", label: "Hotels" },
   { href: "/search/cars", label: "Cars" },
+  { href: "/travel-request", label: "Request" },
 ];
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [tripCount, setTripCount] = useState(0);
   const pathname = usePathname();
 
   useEffect(() => {
@@ -23,6 +26,10 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    setTripCount(getTrips().length);
+  }, [pathname]);
 
   return (
     <>
@@ -80,6 +87,23 @@ export function Navbar() {
           </nav>
 
           <div className="flex items-center gap-2">
+            <Link
+              href="/my-trips"
+              className={[
+                "relative hidden md:inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200",
+                pathname === "/my-trips"
+                  ? "text-primary bg-primary/10"
+                  : "text-muted-foreground hover:text-foreground hover:bg-accent",
+              ].join(" ")}
+            >
+              <Luggage className="h-4 w-4" />
+              My Trips
+              {tripCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                  {tripCount > 9 ? "9+" : tripCount}
+                </span>
+              )}
+            </Link>
             <ThemeToggle />
 
             <button
@@ -161,6 +185,31 @@ export function Navbar() {
                     </motion.div>
                   );
                 })}
+                <motion.div
+                  initial={{ opacity: 0, x: 24 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: NAV_LINKS.length * 0.06, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Link
+                    href="/my-trips"
+                    onClick={() => setMobileOpen(false)}
+                    className={[
+                      "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium",
+                      "transition-all duration-200 cursor-pointer",
+                      pathname === "/my-trips"
+                        ? "bg-primary/10 text-primary"
+                        : "hover:bg-accent text-muted-foreground hover:text-foreground",
+                    ].join(" ")}
+                  >
+                    <Luggage className="h-4 w-4" />
+                    My Trips
+                    {tripCount > 0 && (
+                      <span className="ml-auto flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
+                        {tripCount > 9 ? "9+" : tripCount}
+                      </span>
+                    )}
+                  </Link>
+                </motion.div>
               </nav>
             </motion.div>
           </>
