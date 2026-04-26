@@ -60,7 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div>
                   <p className="text-[11px] uppercase tracking-[0.18em] font-semibold text-muted-foreground mb-4">Book</p>
                   <ul className="space-y-2.5">
-                    {["Flights", "Hotels", "Cars", "My trips"].map((item) => (
+                    {["Flights", "Hotels", "Cars"].map((item) => (
                       <li key={item}>
                         <a
                           href={`/search/${item.toLowerCase().replace(" ", "-")}`}

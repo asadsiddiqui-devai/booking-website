@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Star, MapPin } from "lucide-react";
-import { bookHotelAction } from "@/app/actions/trip-actions";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/utils/format";
@@ -10,13 +10,15 @@ import type { HotelOfferDTO } from "@/lib/duffel/types";
 
 export function HotelCard({
   hotel,
-  tripId,
+  flightOfferId,
+  cabinClass,
   checkIn,
   checkOut,
   onHover,
 }: {
   hotel: HotelOfferDTO;
-  tripId?: string;
+  flightOfferId?: string;
+  cabinClass?: string;
   checkIn: string;
   checkOut: string;
   onHover: (id: string | null) => void;
@@ -28,7 +30,7 @@ export function HotelCard({
       animate={{ opacity: 1, y: 0 }}
       onMouseEnter={() => onHover(hotel.id)}
       onMouseLeave={() => onHover(null)}
-      className="overflow-hidden rounded-lg border bg-card shadow-sm transition hover:shadow-md"
+      className="rounded-lg border bg-card shadow-sm transition hover:shadow-md"
     >
       <div className="flex flex-col sm:flex-row">
         {hotel.photos[0] ? (
@@ -36,16 +38,16 @@ export function HotelCard({
           <img
             src={hotel.photos[0]}
             alt={hotel.name}
-            className="h-44 w-full object-cover sm:h-auto sm:w-56"
+            className="h-44 w-full overflow-hidden rounded-l-lg object-cover sm:h-auto sm:w-56"
           />
         ) : (
-          <div className="flex h-44 w-full items-center justify-center bg-muted sm:h-auto sm:w-56">
+          <div className="flex h-44 w-full items-center justify-center overflow-hidden rounded-l-lg bg-muted sm:h-auto sm:w-56">
             <MapPin className="h-8 w-8 text-muted-foreground" />
           </div>
         )}
         <div className="flex flex-1 flex-col gap-2 p-4">
           <div className="flex items-start justify-between gap-2">
-            <div>
+            <div className="min-w-0">
               <h3 className="font-semibold leading-tight">{hotel.name}</h3>
               <p className="mt-1 text-xs text-muted-foreground">{hotel.address}</p>
             </div>
@@ -76,23 +78,12 @@ export function HotelCard({
                 {hotel.nights} night{hotel.nights > 1 ? "s" : ""} · {formatMoney(hotel.pricePerNight, hotel.currency)} / night
               </div>
             </div>
-            {tripId ? (
-              <form action={bookHotelAction}>
-                <input type="hidden" name="tripId" value={tripId} />
-                <input type="hidden" name="hotelId" value={hotel.id} />
-                <input type="hidden" name="name" value={hotel.name} />
-                <input type="hidden" name="address" value={hotel.address} />
-                <input type="hidden" name="lat" value={hotel.lat} />
-                <input type="hidden" name="lng" value={hotel.lng} />
-                <input type="hidden" name="checkIn" value={checkIn} />
-                <input type="hidden" name="checkOut" value={checkOut} />
-                <input type="hidden" name="rating" value={hotel.rating ?? 0} />
-                <input type="hidden" name="distanceKm" value={hotel.distanceToCenterKm ?? 0} />
-                <input type="hidden" name="amenities" value={JSON.stringify(hotel.amenities)} />
-                <input type="hidden" name="totalPrice" value={hotel.totalPrice} />
-                <input type="hidden" name="currency" value={hotel.currency} />
-                <Button type="submit" size="sm">Add to trip</Button>
-              </form>
+            {flightOfferId ? (
+              <Link
+                href={`/search/cars?flightOfferId=${flightOfferId}&cabinClass=${cabinClass ?? "economy"}&hotelId=${hotel.id}&hotelName=${encodeURIComponent(hotel.name)}&hotelAddress=${encodeURIComponent(hotel.address)}&hotelLat=${hotel.lat ?? ""}&hotelLng=${hotel.lng ?? ""}&hotelCheckIn=${checkIn}&hotelCheckOut=${checkOut}&hotelRating=${hotel.rating ?? 0}&hotelDistanceKm=${hotel.distanceToCenterKm ?? 0}&hotelAmenities=${encodeURIComponent(JSON.stringify(hotel.amenities))}&hotelTotalPrice=${hotel.totalPrice}&hotelCurrency=${hotel.currency}&pickupLocation=${encodeURIComponent(hotel.address)}&pickupAt=${checkIn}T12:00&dropoffAt=${checkOut}T12:00`}
+              >
+                <Button size="sm">Select hotel</Button>
+              </Link>
             ) : (
               <Button size="sm" disabled>Start from a flight</Button>
             )}

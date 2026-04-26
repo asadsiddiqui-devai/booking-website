@@ -29,12 +29,16 @@ function joinDateTime(date: string, time: string): string {
 
 export function CarSearchView({
   defaults,
-  tripId,
+  flightOfferId,
+  cabinClass,
+  hotelParams,
   results,
   hasQuery,
 }: {
   defaults: Defaults;
-  tripId?: string;
+  flightOfferId?: string;
+  cabinClass?: string;
+  hotelParams?: string;
   results: CarResult[];
   hasQuery: boolean;
 }) {
@@ -68,7 +72,11 @@ export function CarSearchView({
       dropoffAt,
     });
     if (category) q.set("category", category);
-    if (tripId) q.set("tripId", tripId);
+    if (flightOfferId) q.set("flightOfferId", flightOfferId);
+    if (cabinClass) q.set("cabinClass", cabinClass);
+    if (hotelParams) {
+      new URLSearchParams(hotelParams).forEach((v, k) => q.set(k, v));
+    }
     router.push(`/search/cars?${q.toString()}`);
   }
 
@@ -197,7 +205,9 @@ export function CarSearchView({
               <CarCard
                 key={r.id}
                 car={r}
-                tripId={tripId}
+                flightOfferId={flightOfferId}
+                cabinClass={cabinClass}
+                hotelParams={hotelParams}
                 pickupLocation={pickupLocation}
                 dropoffLocation={dropoffLocation || pickupLocation}
                 pickupAt={pickupAt}

@@ -1,5 +1,4 @@
 import { PageTransition } from "@/components/motion/page-transition";
-import { getDemoContext } from "@/lib/demo-user";
 import { geocode } from "@/lib/geo/nominatim";
 import { searchHotels } from "@/lib/booking/hotels";
 import { HotelSearchView } from "@/components/search/hotel-search-view";
@@ -11,30 +10,14 @@ interface PageProps {
 
 export default async function HotelSearchPage({ searchParams }: PageProps) {
   const sp = await searchParams;
-  const tripId = typeof sp.tripId === "string" ? sp.tripId : undefined;
+  const flightOfferId = typeof sp.flightOfferId === "string" ? sp.flightOfferId : undefined;
+  const cabinClass = typeof sp.cabinClass === "string" ? sp.cabinClass : undefined;
 
-  const { supabase, user } = await getDemoContext();
-
-  let city = typeof sp.city === "string" ? sp.city : "";
-  let checkIn = typeof sp.checkIn === "string" ? sp.checkIn : "";
-  let checkOut = typeof sp.checkOut === "string" ? sp.checkOut : "";
+  const city = typeof sp.city === "string" ? sp.city : "";
+  const checkIn = typeof sp.checkIn === "string" ? sp.checkIn : "";
+  const checkOut = typeof sp.checkOut === "string" ? sp.checkOut : "";
   const guests = Number(sp.guests ?? 1);
   const rooms = Number(sp.rooms ?? 1);
-
-  // Prefill from trip if navigating from a flight booking
-  if (tripId && (!city || !checkIn || !checkOut)) {
-    const { data: trip } = await supabase
-      .from("trips")
-      .select("destination_iata, destination_city, start_date, end_date")
-      .eq("id", tripId)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (trip) {
-      city = city || trip.destination_city || trip.destination_iata || "";
-      checkIn = checkIn || trip.start_date || "";
-      checkOut = checkOut || trip.end_date || "";
-    }
-  }
 
   let results: HotelOfferDTO[] = [];
   let center: { lat: number; lng: number; name: string } | null = null;
@@ -72,7 +55,8 @@ export default async function HotelSearchPage({ searchParams }: PageProps) {
         </p>
         <HotelSearchView
           defaults={{ city, checkIn, checkOut, guests, rooms }}
-          tripId={tripId}
+          flightOfferId={flightOfferId}
+          cabinClass={cabinClass}
           results={results}
           center={center}
           error={searchError}

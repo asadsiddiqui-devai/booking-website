@@ -1,31 +1,17 @@
-import { createAdminClient } from "@/lib/supabase/admin";
-
 export interface GeocodeResult {
   lat: number;
   lng: number;
   displayName: string;
 }
 
+const memCache = new Map<string, GeocodeResult>();
+
 export async function geocode(query: string): Promise<GeocodeResult | null> {
   const key = query.trim().toLowerCase();
   if (!key) return null;
 
-  const admin = createAdminClient();
-  const { data: cached } = await admin
-    .from("geocode_cache")
-    .select("lat, lng, display_name")
-    .eq("query_key", key)
-    .maybeSingle();
+  if (memCache.has(key)) return memCache.get(key)!;
 
-  if (cached) {
-    return {
-      lat: Number(cached.lat),
-      lng: Number(cached.lng),
-      displayName: cached.display_name ?? key,
-    };
-  }
-
-  // Open-Meteo geocoding — free, no key, server-friendly
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=en&format=json`;
   let res: Response;
   try {
@@ -57,15 +43,6 @@ export async function geocode(query: string): Promise<GeocodeResult | null> {
     displayName: [first.name, first.country].filter(Boolean).join(", "),
   };
 
-  // Non-fatal — cache write failures don't block the response
-  admin.from("geocode_cache").insert({
-    query_key: key,
-    lat: result.lat,
-    lng: result.lng,
-    display_name: result.displayName,
-  }).then(({ error }) => {
-    if (error) console.warn("[geocode] cache write failed:", error.message);
-  });
-
+  memCache.set(key, result);
   return result;
 }

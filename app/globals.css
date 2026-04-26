@@ -570,6 +570,84 @@ body::after {
 }
 
 /* ─────────────────────────────────────────────
+   REACTIVE INTERACTIONS
+───────────────────────────────────────────── */
+
+/* Inputs — focus lift */
+input:focus, select:focus, textarea:focus {
+  transform: translateY(-1px);
+  transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s ease;
+}
+
+/* Cards — interactive press feedback */
+.card-press {
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.15s ease;
+}
+.card-press:hover { transform: translateY(-3px); }
+.card-press:active { transform: translateY(0) scale(0.99); }
+
+/* Link cards */
+a.card-interactive {
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+}
+a.card-interactive:hover { transform: translateY(-4px); }
+a.card-interactive:active { transform: translateY(-1px) scale(0.99); }
+
+/* Buttons — press spring */
+button, [role="button"] {
+  transition: transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.15s ease;
+}
+button:active:not(:disabled) { transform: scale(0.97); }
+
+/* Ripple effect for primary actions */
+@keyframes ripple {
+  from { transform: scale(0); opacity: 0.4; }
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* Nav links hover — slide-up text */
+@keyframes nav-slide-up {
+  from { transform: translateY(3px); opacity: 0.6; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* Badge pulse for live status */
+@keyframes status-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 currentColor; opacity: 1; }
+  50% { box-shadow: 0 0 0 4px transparent; opacity: 0.8; }
+}
+
+/* Skeleton shimmer */
+@keyframes skeleton-shimmer {
+  from { background-position: -200% 0; }
+  to { background-position: 200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 25%,
+    oklch(from var(--muted) l c h / 0.6) 50%,
+    var(--muted) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* Focus ring — keyboard nav */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Smooth page transitions */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────
    LEAFLET
 ───────────────────────────────────────────── */
 

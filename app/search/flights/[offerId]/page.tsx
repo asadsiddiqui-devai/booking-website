@@ -3,7 +3,6 @@ import { ArrowRight, Plane } from "lucide-react";
 import { redirect } from "next/navigation";
 import { PageTransition } from "@/components/motion/page-transition";
 import { getFlightOffer } from "@/lib/duffel/flights";
-import { bookFlightAction } from "@/app/actions/trip-actions";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -104,16 +103,18 @@ export default async function FlightDetailPage({ params, searchParams }: PagePro
               </div>
             ))}
 
-            <form action={bookFlightAction} className="flex items-center justify-between gap-4 pt-4">
-              <input type="hidden" name="offerId" value={offer.id} />
-              <input type="hidden" name="cabinClass" value={offer.cabinClass} />
+            <div className="flex items-center justify-between gap-4 pt-4">
               <p className="text-xs text-muted-foreground">
-                Creates a draft trip and takes you to pick a hotel.
+                Pick a hotel next. Nothing is saved until you confirm.
               </p>
-              <Button type="submit" size="lg">
-                Continue — pick a hotel <ArrowRight className="h-4 w-4" />
-              </Button>
-            </form>
+              <Link
+                href={`/search/hotels?flightOfferId=${offer.id}&cabinClass=${offer.cabinClass}&city=${encodeURIComponent(offer.slices[0]?.destinationCity ?? offer.slices[0]?.destination ?? "")}&checkIn=${offer.slices[0]?.segments[0]?.departureAt.slice(0, 10) ?? ""}&checkOut=${(offer.slices[1]?.segments[offer.slices[1].segments.length - 1]?.arrivalAt ?? offer.slices[0]?.segments[offer.slices[0].segments.length - 1]?.arrivalAt ?? "").slice(0, 10)}`}
+              >
+                <Button size="lg">
+                  Continue — pick a hotel <ArrowRight className="h-4 w-4" />
+                </Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       </div>

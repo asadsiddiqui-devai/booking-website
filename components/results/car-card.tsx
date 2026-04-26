@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Users, DoorOpen, Snowflake, GaugeCircle } from "lucide-react";
-import { bookCarAction } from "@/app/actions/trip-actions";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/utils/format";
@@ -10,14 +10,18 @@ import type { CarResult } from "@/lib/cars/search";
 
 export function CarCard({
   car,
-  tripId,
+  flightOfferId,
+  cabinClass,
+  hotelParams,
   pickupLocation,
   dropoffLocation,
   pickupAt,
   dropoffAt,
 }: {
   car: CarResult;
-  tripId?: string;
+  flightOfferId?: string;
+  cabinClass?: string;
+  hotelParams?: string;
   pickupLocation: string;
   dropoffLocation: string;
   pickupAt: string;
@@ -61,16 +65,14 @@ export function CarCard({
         )}
       </div>
 
-      {tripId ? (
-        <form action={bookCarAction} className="mt-4 flex justify-end">
-          <input type="hidden" name="tripId" value={tripId} />
-          <input type="hidden" name="vehicleId" value={car.id} />
-          <input type="hidden" name="pickupLocation" value={pickupLocation} />
-          <input type="hidden" name="pickupAt" value={pickupAt} />
-          <input type="hidden" name="dropoffLocation" value={dropoffLocation} />
-          <input type="hidden" name="dropoffAt" value={dropoffAt} />
-          <Button type="submit" size="sm">Add to trip</Button>
-        </form>
+      {flightOfferId ? (
+        <div className="mt-4 flex justify-end">
+          <Link
+            href={`/confirm?flightOfferId=${flightOfferId}&cabinClass=${cabinClass ?? "economy"}&vehicleId=${car.id}&pickupLocation=${encodeURIComponent(pickupLocation)}&pickupAt=${encodeURIComponent(pickupAt)}&dropoffLocation=${encodeURIComponent(dropoffLocation)}&dropoffAt=${encodeURIComponent(dropoffAt)}${hotelParams ? `&${hotelParams}` : ""}`}
+          >
+            <Button size="sm">Select car</Button>
+          </Link>
+        </div>
       ) : (
         <div className="mt-4 text-right text-xs text-muted-foreground">
           Start from a flight to add this to a trip.

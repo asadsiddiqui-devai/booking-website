@@ -2,7 +2,6 @@ import { PageTransition } from "@/components/motion/page-transition";
 import { CarSearchView } from "@/components/search/car-search-view";
 import { searchCarsLive } from "@/lib/booking/cars";
 import type { CarResult } from "@/lib/cars/search";
-import { getDemoContext } from "@/lib/demo-user";
 
 interface PageProps {
   searchParams: Promise<{ [k: string]: string | string[] | undefined }>;
@@ -10,38 +9,29 @@ interface PageProps {
 
 export default async function CarSearchPage({ searchParams }: PageProps) {
   const sp = await searchParams;
-  const tripId = typeof sp.tripId === "string" ? sp.tripId : undefined;
+  const flightOfferId = typeof sp.flightOfferId === "string" ? sp.flightOfferId : undefined;
+  const cabinClass = typeof sp.cabinClass === "string" ? sp.cabinClass : undefined;
 
-  const { supabase, user } = await getDemoContext();
-
-  // Support both old ?location= and new ?pickupLocation= params
-  let pickupLocation =
+  const pickupLocation =
     typeof sp.pickupLocation === "string"
       ? sp.pickupLocation
       : typeof sp.location === "string"
       ? sp.location
       : "";
-  let dropoffLocation =
+  const dropoffLocation =
     typeof sp.dropoffLocation === "string" ? sp.dropoffLocation : "";
-  let pickupAt = typeof sp.pickupAt === "string" ? sp.pickupAt : "";
-  let dropoffAt = typeof sp.dropoffAt === "string" ? sp.dropoffAt : "";
+  const pickupAt = typeof sp.pickupAt === "string" ? sp.pickupAt : "";
+  const dropoffAt = typeof sp.dropoffAt === "string" ? sp.dropoffAt : "";
   const category = typeof sp.category === "string" ? sp.category : "";
 
-  if (tripId && (!pickupLocation || !pickupAt || !dropoffAt)) {
-    const { data: trip } = await supabase
-      .from("trips")
-      .select("destination_city, destination_iata, start_date, end_date")
-      .eq("id", tripId)
-      .eq("user_id", user.id)
-      .maybeSingle();
-    if (trip) {
-      const city = trip.destination_city || trip.destination_iata || "";
-      pickupLocation = pickupLocation || city;
-      dropoffLocation = dropoffLocation || city;
-      pickupAt = pickupAt || (trip.start_date ? `${trip.start_date}T12:00` : "");
-      dropoffAt = dropoffAt || (trip.end_date ? `${trip.end_date}T12:00` : "");
-    }
+  // Forward hotel selection params to CarSearchView so they survive re-searches
+  const hotelParamKeys = ["hotelId","hotelName","hotelAddress","hotelLat","hotelLng","hotelCheckIn","hotelCheckOut","hotelRating","hotelDistanceKm","hotelAmenities","hotelTotalPrice","hotelCurrency"];
+  const hotelParamsObj = new URLSearchParams();
+  for (const key of hotelParamKeys) {
+    const val = sp[key];
+    if (typeof val === "string") hotelParamsObj.set(key, val);
   }
+  const hotelParams = hotelParamsObj.toString() || undefined;
 
   let results: CarResult[] = [];
   let carError: string | null = null;
@@ -76,7 +66,9 @@ export default async function CarSearchPage({ searchParams }: PageProps) {
 
         <CarSearchView
           defaults={{ pickupLocation, dropoffLocation, pickupAt, dropoffAt, category }}
-          tripId={tripId}
+          flightOfferId={flightOfferId}
+          cabinClass={cabinClass}
+          hotelParams={hotelParams}
           results={results}
           hasQuery={hasQuery}
         />

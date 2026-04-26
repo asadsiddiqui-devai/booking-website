@@ -11,7 +11,6 @@ const NAV_LINKS = [
   { href: "/search/flights", label: "Flights" },
   { href: "/search/hotels", label: "Hotels" },
   { href: "/search/cars", label: "Cars" },
-  { href: "/trips", label: "My trips" },
 ];
 
 export function Navbar() {
@@ -82,6 +81,7 @@ export function Navbar() {
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
+
             <button
               type="button"
               className="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-full hover:bg-accent transition-colors cursor-pointer"

@@ -27,14 +27,16 @@ interface Defaults {
 
 export function HotelSearchView({
   defaults,
-  tripId,
+  flightOfferId,
+  cabinClass,
   results,
   center,
   error,
   hasQuery,
 }: {
   defaults: Defaults;
-  tripId?: string;
+  flightOfferId?: string;
+  cabinClass?: string;
   results: HotelOfferDTO[];
   center: { lat: number; lng: number; name: string } | null;
   error: string | null;
@@ -67,7 +69,8 @@ export function HotelSearchView({
       guests: String(guests),
       rooms: String(rooms),
     });
-    if (tripId) q.set("tripId", tripId);
+    if (flightOfferId) q.set("flightOfferId", flightOfferId);
+    if (cabinClass) q.set("cabinClass", cabinClass);
     router.push(`/search/hotels?${q.toString()}`);
   }
 
@@ -126,7 +129,7 @@ export function HotelSearchView({
               <Select
                 value={String(minRating)}
                 onChange={(e) => setMinRating(Number(e.target.value))}
-                className="h-8 w-auto"
+                className="h-8 !w-auto min-w-[120px]"
               >
                 <option value="0">Any rating</option>
                 <option value="3">3+ stars</option>
@@ -136,7 +139,7 @@ export function HotelSearchView({
               <Select
                 value={maxPrice ? String(maxPrice) : ""}
                 onChange={(e) => setMaxPrice(e.target.value ? Number(e.target.value) : undefined)}
-                className="h-8 w-auto"
+                className="h-8 !w-auto min-w-[120px]"
               >
                 <option value="">Any price</option>
                 <option value="200">Under $200</option>
@@ -144,12 +147,13 @@ export function HotelSearchView({
                 <option value="1000">Under $1000</option>
               </Select>
             </div>
-            <div className="space-y-3">
+            <div className="mt-4 space-y-3">
               {filtered.map((h) => (
                 <HotelCard
                   key={h.id}
                   hotel={h}
-                  tripId={tripId}
+                  flightOfferId={flightOfferId}
+                  cabinClass={cabinClass}
                   checkIn={checkIn}
                   checkOut={checkOut}
                   onHover={setHoveredId}

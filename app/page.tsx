@@ -617,16 +617,6 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        {/* ─ Scroll indicator ─ */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 2.5 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5"
-        >
-          <span className="text-[9px] uppercase tracking-[0.3em] text-muted-foreground/50">Scroll</span>
-          <div className="h-8 w-px bg-gradient-to-b from-primary/50 to-transparent animate-scroll-bounce" />
-        </motion.div>
       </section>
 
       {/* ═══════════════════════════════════════════════
@@ -1049,9 +1039,9 @@ export default function Home() {
                 Search flights
               </Button>
             </Link>
-            <Link href="/trips">
-              <button className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-9 text-sm font-semibold hover:bg-accent hover:border-primary/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-                My trips
+            <Link href="/search/hotels">
+              <button suppressHydrationWarning className="inline-flex h-12 items-center justify-center rounded-full border border-border bg-background px-9 text-sm font-semibold hover:bg-accent hover:border-primary/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+                Browse hotels
                 <ArrowRight className="ml-2 h-4 w-4" />
               </button>
             </Link>

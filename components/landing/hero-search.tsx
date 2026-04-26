@@ -67,6 +67,7 @@ function FlightPanel() {
           type="button"
           onClick={swap}
           aria-label="Swap origin and destination"
+          suppressHydrationWarning
           className={[
             "absolute left-1/2 top-[calc(50%+10px)] -translate-x-1/2 -translate-y-1/2",
             "z-10 hidden md:flex h-8 w-8 items-center justify-center rounded-full",
@@ -295,6 +296,7 @@ export function HeroSearch() {
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
+                suppressHydrationWarning
                 className={[
                   "relative flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold",
                   "transition-all duration-300 cursor-pointer",
